@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -83,6 +84,13 @@ public class DrawAreaActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            }
+        });
+
+        btn_eraser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawView.setDrawingColor(Color.WHITE);
             }
         });
 
