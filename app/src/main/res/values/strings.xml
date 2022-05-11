@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">PaintApp</string>
+    <string name="new_pic">NEW</string>
+    <string name="load_pic">LOAD</string>
+    <string name="exit">EXIT</string>
+    <string name="back_to_menu">back to menu</string>
+    <string name="showMenuBtn">...</string>
+    <string name="palette_button">palette button</string>
+    <string name="eraser_button">eraser button</string>
+    <string name="text_button">place text button</string>
+    <string name="undo_button">undo button</string>
+    <string name="save_button">save button</string>
+    <string name="clear_button">clear button</string>
+</resources>
