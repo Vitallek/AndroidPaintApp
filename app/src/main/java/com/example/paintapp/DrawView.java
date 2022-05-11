@@ -1,16 +1,30 @@
 package com.example.paintapp;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.net.Uri;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 
 public class DrawView extends View {
@@ -128,6 +142,46 @@ public class DrawView extends View {
         path.moveTo(x,y);
         point.x = (int) x;
         point.y = (int) y;
+    }
+
+    public void saveToInternalStorage(){
+        ContextWrapper cw = new ContextWrapper(getContext());
+        String fileName = "ViDrawer" + System.currentTimeMillis();
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("ViDrawer", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,fileName + ".jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            Toast message = Toast.makeText(getContext(),"Successfully saved to " + directory.getAbsolutePath(), Toast.LENGTH_LONG);
+            message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
+            message.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //return directory.getAbsolutePath();
+    }
+
+    public void loadFromStorage (Uri pickedImage) {
+        try {
+            String[] filePath = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContext().getContentResolver().query(pickedImage, filePath, null, null, null);
+
+            // Let's read picked image path using content resolver
+            cursor.moveToFirst();
+            String imagePath = cursor.getString(cursor.getColumnIndexOrThrow(filePath[0]));
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            bitmap = BitmapFactory.decodeFile(imagePath, options);
+            cursor.close();
+            invalidate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void clear() {

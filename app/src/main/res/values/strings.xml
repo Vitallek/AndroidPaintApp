@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">PaintApp</string>
+    <string name="app_name">ViDrawer</string>
     <string name="new_pic">NEW</string>
-    <string name="load_pic">LOAD</string>
+    <string name="load_gallery">load from gallery</string>
+    <string name="load_camera">take a photo</string>
     <string name="exit">EXIT</string>
     <string name="back_to_menu">back to menu</string>
     <string name="showMenuBtn">...</string>
@@ -11,4 +12,5 @@
     <string name="undo_button">undo button</string>
     <string name="save_button">save button</string>
     <string name="clear_button">clear button</string>
+    <string name="pick_color">pick color</string>
 </resources>

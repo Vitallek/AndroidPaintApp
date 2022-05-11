@@ -4,7 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/black">
+
+    <VideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_new"
@@ -18,19 +29,35 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btn_load"/>
+        app:layout_constraintBottom_toTopOf="@id/btn_load_gallery"/>
 
-    <Button
-        android:id="@+id/btn_load"
-        android:layout_width="148dp"
-        android:layout_height="80dp"
-        android:text="@string/load_pic"
+    <ImageButton
+        android:id="@+id/btn_load_gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/load_gallery"
+        android:background="@drawable/gallery"
+        android:adjustViewBounds="false"
+        android:textColor="@color/dark_gray"
+        android:textSize="25sp"
+        app:cornerRadius="9dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_exit"
+        app:layout_constraintEnd_toStartOf="@id/btn_load_camera"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_new" />
+
+    <ImageButton
+        android:id="@+id/btn_load_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/load_camera"
+        android:background="@drawable/camera"
         android:textColor="@color/dark_gray"
         android:textSize="25sp"
         app:cornerRadius="9dp"
         app:layout_constraintBottom_toTopOf="@id/btn_exit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_load_gallery"
         app:layout_constraintTop_toBottomOf="@+id/btn_new" />
 
     <Button
@@ -44,16 +71,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_load" />
-
-    <VideoView
-        android:id="@+id/videoView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_load_gallery" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
