@@ -104,13 +104,6 @@ public class DrawView extends View {
         }
     }
 
-    public void clear() {
-        pathMap.clear(); //remove all paths
-        previousPointMap.clear();
-        bitmap.eraseColor(Color.WHITE);
-        invalidate();
-    }
-
     private void touchEnded (int pointerID){
         Path path = pathMap.get(pointerID); //get the corresponding Path
         bitmapCanvas.drawPath(path, paintLine); //draw to bitmapCanvas
@@ -135,5 +128,28 @@ public class DrawView extends View {
         path.moveTo(x,y);
         point.x = (int) x;
         point.y = (int) y;
+    }
+
+    public void clear() {
+        pathMap.clear(); //remove all paths
+        previousPointMap.clear();
+        bitmap.eraseColor(Color.WHITE);
+        invalidate();
+    }
+
+    public void setDrawingColor(int color) {
+        paintLine.setColor(color);
+    }
+
+    public int getDrawingColor() {
+        return paintLine.getColor();
+    }
+
+    public void setLineWidth (int width) {
+        paintLine.setStrokeWidth(width);
+    }
+
+    int getLineWidth() {
+        return (int) paintLine.getStrokeWidth();
     }
 }

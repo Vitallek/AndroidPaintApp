@@ -51,13 +51,15 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <SeekBar
-            android:id="@+id/seekBar"
+            android:id="@+id/drawWidth"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btn_palette"/>
+            app:layout_constraintBottom_toTopOf="@id/btn_palette"
+            android:max="100"
+            android:progress="23"/>
 
         <ImageButton
             android:id="@+id/btn_palette"
@@ -68,7 +70,7 @@
             android:contentDescription="@string/palette_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seekBar"
+            app:layout_constraintTop_toBottomOf="@+id/drawWidth"
             app:layout_constraintEnd_toStartOf="@id/btn_eraser"/>
 
         <ImageButton
@@ -78,7 +80,7 @@
             android:background="@drawable/eraser"
             android:contentDescription="@string/eraser_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seekBar"
+            app:layout_constraintTop_toBottomOf="@+id/drawWidth"
             app:layout_constraintStart_toEndOf="@id/btn_palette"
             app:layout_constraintEnd_toStartOf="@id/btn_text"/>
 
@@ -91,7 +93,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_eraser"
             app:layout_constraintStart_toEndOf="@id/btn_undo"
-            app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+            app:layout_constraintTop_toBottomOf="@+id/drawWidth" />
 
         <ImageButton
             android:id="@+id/btn_undo"
@@ -100,7 +102,7 @@
             android:background="@drawable/undo"
             android:contentDescription="@string/undo_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seekBar"
+            app:layout_constraintTop_toBottomOf="@+id/drawWidth"
             app:layout_constraintStart_toEndOf="@id/btn_text"
             app:layout_constraintEnd_toStartOf="@id/btn_save"/>
 
@@ -111,7 +113,7 @@
             android:background="@drawable/save"
             android:contentDescription="@string/save_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seekBar"
+            app:layout_constraintTop_toBottomOf="@+id/drawWidth"
             app:layout_constraintStart_toEndOf="@id/btn_undo"
             app:layout_constraintEnd_toStartOf="@id/btn_clear"/>
 
@@ -124,7 +126,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_save"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+            app:layout_constraintTop_toBottomOf="@+id/drawWidth" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
