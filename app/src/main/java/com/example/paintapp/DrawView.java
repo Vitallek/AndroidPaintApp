@@ -11,8 +11,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
@@ -22,14 +25,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 
 public class DrawView extends View {
 
-    public static final float TOUCH_TOLERANCE = 10;
+    public static final float TOUCH_TOLERANCE = 0;
 
     private Bitmap bitmap;
     private Canvas bitmapCanvas;
@@ -56,6 +63,8 @@ public class DrawView extends View {
         pathMap = new HashMap<>();
         previousPointMap = new HashMap<>();
     }
+
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -145,42 +154,44 @@ public class DrawView extends View {
     }
 
     public void saveToInternalStorage(){
-        ContextWrapper cw = new ContextWrapper(getContext());
-        String fileName = "ViDrawer" + System.currentTimeMillis();
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("ViDrawer", Context.MODE_PRIVATE);
-        // Create imageDir
-        File mypath=new File(directory,fileName + ".jpg");
-
-        FileOutputStream fos = null;
+        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"ViDrawer");
+        if (!dir.exists()){
+            dir.mkdir();
+        }
+        File file = new File(dir,System.currentTimeMillis()+".jpg");
+        OutputStream outputStream = null;
         try {
-            fos = new FileOutputStream(mypath);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            Toast message = Toast.makeText(getContext(),"Successfully saved to " + directory.getAbsolutePath(), Toast.LENGTH_LONG);
-            message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
-            message.show();
-        } catch (Exception e) {
+             outputStream = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        //return directory.getAbsolutePath();
+
+        if(outputStream != null) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+            Toast message = Toast.makeText(getContext(),"Successfully saved to " + file.getAbsolutePath(), Toast.LENGTH_LONG);
+            message.show();
+
+            try {
+                outputStream.flush();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     public void loadFromStorage (Uri pickedImage) {
         try {
-            String[] filePath = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContext().getContentResolver().query(pickedImage, filePath, null, null, null);
-
-            // Let's read picked image path using content resolver
-            cursor.moveToFirst();
-            String imagePath = cursor.getString(cursor.getColumnIndexOrThrow(filePath[0]));
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            bitmap = BitmapFactory.decodeFile(imagePath, options);
-            cursor.close();
-            invalidate();
+            InputStream inputStream = getContext().getContentResolver().openInputStream(pickedImage);
+            bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            if(bitmap != null) {
+                //works
+                setCanvas(bitmap);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 
@@ -191,6 +202,14 @@ public class DrawView extends View {
         invalidate();
     }
 
+    public void setCanvas(Bitmap bitmap) {
+        try {
+            bitmapCanvas = new Canvas(bitmap);
+            bitmapCanvas.drawColor(Color.BLACK);
+        } catch (Exception e){
+            System.out.println(e);
+        }
+    }
     public void setDrawingColor(int color) {
         paintLine.setColor(color);
     }

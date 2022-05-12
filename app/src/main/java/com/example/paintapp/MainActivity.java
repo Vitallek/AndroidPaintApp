@@ -1,9 +1,14 @@
 package com.example.paintapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -14,6 +19,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.FileNotFoundException;
@@ -25,14 +31,32 @@ public class MainActivity extends AppCompatActivity {
     private VideoView videoView;
     private Button btnExit, btnNew;
     private ImageButton btnLoadGallery, btnLoadCamera;
+    private static int REQUEST_CODE_READ = 300;
     private static final int GALLERY_REQUEST_CODE = 100;
     private static final int CAMERA_REQUEST_CODE = 200;
 
+    private void askPermissionRead() {
+        ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},REQUEST_CODE_READ);
+    }
     public void loadDrawAreaActivity(Uri uri) {
         Intent intent = new Intent(MainActivity.this, DrawAreaActivity.class);
         intent.putExtra("uri", uri);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == REQUEST_CODE_READ)
+        {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                openGallery();
+            }else {
+                Toast.makeText(MainActivity.this,"Please provide the required permissions",Toast.LENGTH_SHORT).show();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -42,12 +66,6 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == 100) {
             try {
                 Uri selectedImage = data.getData();
-                Bitmap bitmap = null;
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 loadDrawAreaActivity(selectedImage);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -55,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (resultCode == RESULT_OK && requestCode == 200) {
-
+            //todo camera response
         }
     }
 
@@ -68,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         videoView = findViewById(R.id.videoView);
+
         String path = "android.resource://com.example.paintapp/" + R.raw.background;
         Uri uri = Uri.parse(path);
         videoView.setVideoURI(uri);
@@ -88,8 +107,14 @@ public class MainActivity extends AppCompatActivity {
         btnLoadGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+
+                if (ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                    openGallery();
+                }else {
+                    askPermissionRead();
+                }
+
+
             }
         });
 
@@ -108,6 +133,11 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
 
     @Override

@@ -1,10 +1,14 @@
 package com.example.paintapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,14 +16,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.madrapps.pikolo.ColorPicker;
 import com.madrapps.pikolo.listeners.SimpleColorSelectionListener;
 
-import java.io.FileNotFoundException;
-import java.io.OutputStream;
-
 public class DrawAreaActivity extends AppCompatActivity {
+
+    private static int REQUEST_CODE_WRITE = 100;
 
     private DrawView drawView;
 
@@ -117,7 +121,13 @@ public class DrawAreaActivity extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                drawView.saveToInternalStorage();
+
+                if (ContextCompat.checkSelfPermission(DrawAreaActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                    drawView.saveToInternalStorage();
+                }else {
+                    askPermissionWrite();
+                }
+
             }
         });
         btn_pick_color.setOnClickListener(new View.OnClickListener() {
@@ -159,5 +169,26 @@ public class DrawAreaActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void askPermissionWrite() {
+        ActivityCompat.requestPermissions(DrawAreaActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE_WRITE);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == REQUEST_CODE_WRITE)
+        {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                drawView.saveToInternalStorage();
+            }else {
+                Toast.makeText(DrawAreaActivity.this,"Please provide the required permissions",Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
